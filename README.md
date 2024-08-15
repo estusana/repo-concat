@@ -1,58 +1,54 @@
-# File Concatenator
+# React + TypeScript + Vite
 
-A modern web-based tool for concatenating files with intelligent filtering and pattern matching.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Overview
+Currently, two official plugins are available:
 
-This project started as a replacement for bash-based file concatenation scripts, evolving into a full-featured React application that runs entirely in the browser.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Features
+## Expanding the ESLint configuration
 
-- **Drag & Drop File Upload**: Easy file selection with visual feedback
-- **Smart Text Detection**: Automatically identifies text files vs binary files
-- **Exclude Patterns**: Flexible filtering with support for extensions, globs, and regex
-- **Browser Storage**: Persistent collections using IndexedDB
-- **Copy to Clipboard**: One-click copying of concatenated results
-- **Export Options**: Multiple output formats and download options
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## Legacy Scripts
-
-The original bash scripts that inspired this project can be found in the `legacy-scripts/` directory:
-
-- `github-concatenator.sh` - Downloads and concatenates files from GitHub repositories
-- `local-folder-concatenator.sh` - Processes local directories and files
-
-## Development
-
-This project uses modern web technologies:
-
-- **React 18** with TypeScript for the UI
-- **Vite** for fast development and building
-- **Tailwind CSS** for styling
-- **Dexie.js** for IndexedDB storage
-- **Zustand** for state management
-
-## Getting Started
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
+```js
+export default tseslint.config({
+  extends: [
+    // Remove ...tseslint.configs.recommended and replace with this
+    ...tseslint.configs.recommendedTypeChecked,
+    // Alternatively, use this for stricter rules
+    ...tseslint.configs.strictTypeChecked,
+    // Optionally, add this for stylistic rules
+    ...tseslint.configs.stylisticTypeChecked,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
 ```
 
-## Project Status
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-🚧 **In Development** - This project is actively being developed with regular updates.
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-## License
-
-MIT License - see LICENSE file for details.
-
----
-
-_Started: August 2024_
+export default tseslint.config({
+  plugins: {
+    // Add the react-x and react-dom plugins
+    'react-x': reactX,
+    'react-dom': reactDom,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended typescript rules
+    ...reactX.configs['recommended-typescript'].rules,
+    ...reactDom.configs.recommended.rules,
+  },
+})
+```

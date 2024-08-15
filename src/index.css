@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+/* Drag and drop styles */
+.drag-over {
+  @apply border-blue-500 bg-blue-50;
+}
+
+.drag-active {
+  @apply border-blue-600 bg-blue-100;
+}
+
+/* File list styles */
+.file-item {
+  @apply transition-colors duration-200 hover:bg-gray-50;
+}
+
+.file-item.selected {
+  @apply bg-blue-50 border-blue-200;
+}
+
+/* Pattern input styles */
+.pattern-input {
+  @apply font-mono text-sm;
+}
+
+/* Output preview styles */
+.output-preview {
+  @apply font-mono text-sm whitespace-pre-wrap;
+}
