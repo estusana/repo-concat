@@ -3,6 +3,7 @@ import { FileUpload } from './components/FileUpload';
 import { ExcludePatterns } from './components/ExcludePatterns';
 import { FileList } from './components/FileList';
 import { OutputPanel } from './components/OutputPanel';
+import { CollectionManager } from './components/CollectionManager';
 import { useAppStore } from './stores/useAppStore';
 
 function App() {
@@ -70,6 +71,11 @@ function App() {
             {/* Exclude patterns */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <ExcludePatterns />
+            </div>
+
+            {/* Collection manager */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <CollectionManager />
             </div>
 
             {/* Quick stats */}
