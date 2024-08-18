@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { ProcessedFile, ExcludePattern, FileCollection, CollectionSettings } from '../types';
+import { collectionService } from '../services/collectionService';
 
 interface AppState {
     // Current working data
@@ -49,6 +50,10 @@ interface AppState {
     // Collection management
     setCollections: (collections: FileCollection[]) => void;
     setActiveCollection: (id?: number) => void;
+    saveCurrentAsCollection: (name: string) => Promise<void>;
+    loadCollection: (id: number) => Promise<void>;
+    deleteCollection: (id: number) => Promise<void>;
+    loadAllCollections: () => Promise<void>;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -140,5 +145,57 @@ export const useAppStore = create<AppState>((set, get) => ({
     // Collection actions
     setCollections: (collections) => set({ collections }),
 
-    setActiveCollection: (id) => set({ activeCollectionId: id })
+    setActiveCollection: (id) => set({ activeCollectionId: id }),
+
+    saveCurrentAsCollection: async (name) => {
+        const { currentFiles, excludePatterns, settings } = get();
+        try {
+            const id = await collectionService.saveCollection(name, currentFiles, excludePatterns, settings);
+            const collections = await collectionService.getAllCollections();
+            set({ collections, activeCollectionId: id });
+        } catch (error) {
+            console.error('Failed to save collection:', error);
+        }
+    },
+
+    loadCollection: async (id) => {
+        try {
+            const collection = await collectionService.loadCollection(id);
+            if (collection) {
+                set({
+                    currentFiles: collection.files,
+                    excludePatterns: collection.excludePatterns,
+                    settings: collection.settings,
+                    activeCollectionId: id,
+                    selectedFiles: [],
+                    previewFile: undefined
+                });
+            }
+        } catch (error) {
+            console.error('Failed to load collection:', error);
+        }
+    },
+
+    deleteCollection: async (id) => {
+        try {
+            await collectionService.deleteCollection(id);
+            const collections = await collectionService.getAllCollections();
+            const { activeCollectionId } = get();
+            set({
+                collections,
+                activeCollectionId: activeCollectionId === id ? undefined : activeCollectionId
+            });
+        } catch (error) {
+            console.error('Failed to delete collection:', error);
+        }
+    },
+
+    loadAllCollections: async () => {
+        try {
+            const collections = await collectionService.getAllCollections();
+            set({ collections });
+        } catch (error) {
+            console.error('Failed to load collections:', error);
+        }
+    }
 }));
