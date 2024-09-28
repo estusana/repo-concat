@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { PlusIcon, XMarkIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, XMarkIcon, SparklesIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import { useAppStore } from '../stores/useAppStore';
 import { createPattern, validatePattern, getPatternDescription } from '../utils/patternUtils';
 import { PATTERN_PRESETS, applyPreset, suggestPatternsForFiles } from '../utils/patternPresets';
+import { PatternBuilder } from './PatternBuilder';
 import type { ExcludePattern } from '../types';
 
 export const ExcludePatterns: React.FC = () => {
@@ -10,6 +11,7 @@ export const ExcludePatterns: React.FC = () => {
     const [patternType, setPatternType] = useState<ExcludePattern['type']>('path');
     const [validationError, setValidationError] = useState<string>();
     const [showPresets, setShowPresets] = useState(false);
+    const [showPatternBuilder, setShowPatternBuilder] = useState(false);
 
     const {
         excludePatterns,
@@ -62,6 +64,10 @@ export const ExcludePatterns: React.FC = () => {
         suggestions.forEach(pattern => addExcludePattern(pattern));
     };
 
+    const handlePatternBuilderSave = (patterns: ExcludePattern[]) => {
+        patterns.forEach(pattern => addExcludePattern(pattern));
+    };
+
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -70,6 +76,13 @@ export const ExcludePatterns: React.FC = () => {
                     <span className="text-sm text-gray-500">
                         {excludePatterns.filter(p => p.enabled).length} active
                     </span>
+                    <button
+                        onClick={() => setShowPatternBuilder(true)}
+                        className="inline-flex items-center px-2 py-1 text-xs font-medium rounded text-purple-600 hover:text-purple-800"
+                    >
+                        <WrenchScrewdriverIcon className="h-3 w-3 mr-1" />
+                        Builder
+                    </button>
                     <button
                         onClick={() => setShowPresets(!showPresets)}
                         className="inline-flex items-center px-2 py-1 text-xs font-medium rounded text-blue-600 hover:text-blue-800"
@@ -99,6 +112,7 @@ export const ExcludePatterns: React.FC = () => {
                         <option value="path">Path</option>
                         <option value="extension">Extension</option>
                         <option value="glob">Glob</option>
+                        <option value="regex">Regex</option>
                     </select>
 
                     <div className="flex-1">
@@ -110,7 +124,8 @@ export const ExcludePatterns: React.FC = () => {
                             placeholder={
                                 patternType === 'extension' ? 'js, css, log' :
                                     patternType === 'glob' ? '*.test.js, node_modules/*' :
-                                        'node_modules, dist, .git'
+                                        patternType === 'regex' ? '\\.(test|spec)\\.(js|ts)$' :
+                                            'node_modules, dist, .git'
                             }
                             className={`block w-full rounded-md shadow-sm sm:text-sm pattern-input ${validationError
                                 ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
@@ -135,6 +150,7 @@ export const ExcludePatterns: React.FC = () => {
                 <div className="text-xs text-gray-500">
                     {patternType === 'extension' && 'Match files by extension (e.g., "js" matches .js files)'}
                     {patternType === 'glob' && 'Use * for wildcards (e.g., "*.test.js" matches test files)'}
+                    {patternType === 'regex' && 'Use regular expressions for advanced pattern matching (case-insensitive)'}
                     {patternType === 'path' && 'Match files containing this text in their path'}
                 </div>
             </div>
@@ -192,7 +208,8 @@ export const ExcludePatterns: React.FC = () => {
                                         <div className="flex items-center space-x-2">
                                             <span className={`text-xs px-2 py-1 rounded-full font-medium ${pattern.type === 'extension' ? 'bg-green-100 text-green-800' :
                                                 pattern.type === 'glob' ? 'bg-blue-100 text-blue-800' :
-                                                    'bg-gray-100 text-gray-800'
+                                                    pattern.type === 'regex' ? 'bg-purple-100 text-purple-800' :
+                                                        'bg-gray-100 text-gray-800'
                                                 }`}>
                                                 {pattern.type}
                                             </span>
@@ -225,6 +242,14 @@ export const ExcludePatterns: React.FC = () => {
                     <p className="text-sm">No exclude patterns defined</p>
                     <p className="text-xs mt-1">Add patterns above to filter out unwanted files</p>
                 </div>
+            )}
+
+            {/* Pattern Builder Modal */}
+            {showPatternBuilder && (
+                <PatternBuilder
+                    onClose={() => setShowPatternBuilder(false)}
+                    onSave={handlePatternBuilderSave}
+                />
             )}
         </div>
     );
