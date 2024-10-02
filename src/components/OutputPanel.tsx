@@ -4,7 +4,8 @@ import {
     ArrowDownTrayIcon,
     EyeIcon,
     EyeSlashIcon,
-    DocumentTextIcon
+    DocumentTextIcon,
+    Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 import { useAppStore } from '../stores/useAppStore';
 import { shouldExclude } from '../utils/patternUtils';
@@ -16,11 +17,13 @@ import {
     downloadAsFile
 } from '../utils/concatenationUtils';
 import { formatFileSize } from '../utils/fileUtils';
+import { ExportOptions } from './ExportOptions';
 
 export const OutputPanel: React.FC = () => {
     const [showPreview, setShowPreview] = useState(true);
     const [copySuccess, setCopySuccess] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [showExportOptions, setShowExportOptions] = useState(false);
 
     const { currentFiles, excludePatterns, settings } = useAppStore();
 
@@ -120,8 +123,8 @@ export const OutputPanel: React.FC = () => {
                         onClick={handleCopy}
                         disabled={!concatenatedOutput}
                         className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${copySuccess
-                                ? 'bg-green-600 hover:bg-green-700'
-                                : 'bg-blue-600 hover:bg-blue-700'
+                            ? 'bg-green-600 hover:bg-green-700'
+                            : 'bg-blue-600 hover:bg-blue-700'
                             } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                         <ClipboardDocumentIcon className="h-4 w-4 mr-1" />
@@ -131,10 +134,19 @@ export const OutputPanel: React.FC = () => {
                     <button
                         onClick={handleDownload}
                         disabled={!concatenatedOutput || isDownloading}
-                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
-                        {isDownloading ? 'Downloading...' : 'Download'}
+                        {isDownloading ? 'Downloading...' : 'Quick Download'}
+                    </button>
+
+                    <button
+                        onClick={() => setShowExportOptions(true)}
+                        disabled={!concatenatedOutput}
+                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <Cog6ToothIcon className="h-4 w-4 mr-1" />
+                        Export Options
                     </button>
                 </div>
             </div>
@@ -198,10 +210,15 @@ export const OutputPanel: React.FC = () => {
             {/* Settings hint */}
             <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-lg">
                 <p>
-                    💡 <strong>Tip:</strong> The output includes file headers by default.
-                    You can customize the header format and other settings in the configuration panel.
+                    💡 <strong>Tip:</strong> Use "Export Options" for advanced formats like JSON, HTML, and XML.
+                    Quick Download provides a simple text file with current settings.
                 </p>
             </div>
+
+            {/* Export Options Modal */}
+            {showExportOptions && (
+                <ExportOptions onClose={() => setShowExportOptions(false)} />
+            )}
         </div>
     );
 };
