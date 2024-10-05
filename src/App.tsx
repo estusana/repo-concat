@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FileUpload } from './components/FileUpload';
 import { ExcludePatterns } from './components/ExcludePatterns';
 import { FileList } from './components/FileList';
+import { FileTree } from './components/FileTree';
 import { OutputPanel } from './components/OutputPanel';
 import { CollectionManager } from './components/CollectionManager';
 import { useAppStore } from './stores/useAppStore';
 
 function App() {
+  const [activeTab, setActiveTab] = useState<'list' | 'tree'>('list');
   const { currentFiles, isProcessing, processingError } = useAppStore();
 
   return (
@@ -93,9 +95,36 @@ function App() {
 
           {/* Right column - File list and output */}
           <div className="lg:col-span-2 space-y-6">
-            {/* File list */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <FileList />
+            {/* File list/tree view */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              {/* Tab navigation */}
+              <div className="border-b border-gray-200">
+                <nav className="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+                  <button
+                    onClick={() => setActiveTab('list')}
+                    className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'list'
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                  >
+                    List View
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('tree')}
+                    className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'tree'
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                  >
+                    Tree View
+                  </button>
+                </nav>
+              </div>
+
+              {/* Tab content */}
+              <div className="p-6">
+                {activeTab === 'list' ? <FileList /> : <FileTree />}
+              </div>
             </div>
 
             {/* Output panel */}
