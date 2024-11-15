@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from 'react';
-import { CloudArrowUpIcon, DocumentIcon, FolderIcon } from '@heroicons/react/24/outline';
+import { CloudArrowUpIcon, DocumentIcon, FolderIcon, CodeBracketIcon } from '@heroicons/react/24/outline';
 import { useAppStore } from '../stores/useAppStore';
 import { processFiles } from '../utils/fileUtils';
 import { DirectoryPicker } from './DirectoryPicker';
+import { GitHubPicker } from './GitHubPicker';
 
 interface FileUploadProps {
     className?: string;
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({ className = '' }) => {
-    const [activeTab, setActiveTab] = useState<'files' | 'directory'>('files');
+    const [activeTab, setActiveTab] = useState<'files' | 'directory' | 'github'>('files');
     const [isDragOver, setIsDragOver] = useState(false);
     const [isDragActive, setIsDragActive] = useState(false);
 
@@ -106,8 +107,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({ className = '' }) => {
                     <button
                         onClick={() => setActiveTab('files')}
                         className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'files'
-                                ? 'border-blue-500 text-blue-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            ? 'border-blue-500 text-blue-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                             }`}
                     >
                         <DocumentIcon className="h-4 w-4 inline mr-2" />
@@ -116,12 +117,22 @@ export const FileUpload: React.FC<FileUploadProps> = ({ className = '' }) => {
                     <button
                         onClick={() => setActiveTab('directory')}
                         className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'directory'
-                                ? 'border-blue-500 text-blue-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            ? 'border-blue-500 text-blue-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                             }`}
                     >
                         <FolderIcon className="h-4 w-4 inline mr-2" />
                         Select Directory
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('github')}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'github'
+                            ? 'border-blue-500 text-blue-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            }`}
+                    >
+                        <CodeBracketIcon className="h-4 w-4 inline mr-2" />
+                        GitHub Repository
                     </button>
                 </nav>
             </div>
@@ -179,8 +190,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({ className = '' }) => {
                         <div className="absolute inset-0 bg-blue-50 bg-opacity-50 rounded-lg pointer-events-none" />
                     )}
                 </div>
-            ) : (
+            ) : activeTab === 'directory' ? (
                 <DirectoryPicker />
+            ) : (
+                <GitHubPicker />
             )}
         </div>
     );
