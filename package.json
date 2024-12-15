@@ -1,14 +1,33 @@
 {
-  "name": "repo-concat",
-  "private": true,
-  "version": "0.0.0",
+  "name": "file-concatenator",
+  "private": false,
+  "version": "1.0.0",
+  "description": "A modern, browser-based tool for combining multiple files with intelligent filtering and export options",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && npm run preview",
+    "type-check": "tsc --noEmit"
   },
+  "keywords": [
+    "file-concatenation",
+    "text-processing",
+    "github-integration",
+    "file-system-api",
+    "react",
+    "typescript",
+    "vite"
+  ],
+  "author": "File Concatenator Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/estusana/repo-concat.git"
+  },
+  "homepage": "https://github.com/estusana/repo-concat",
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
