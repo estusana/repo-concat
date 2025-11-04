@@ -62,6 +62,29 @@ npm run build
 npm run preview
 ```
 
+### Running Tests
+
+```bash
+# Run tests in watch mode
+npm test
+
+# Run tests once
+npm run test:run
+
+# Run tests with UI
+npm run test:ui
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+The project includes comprehensive test coverage:
+- **188 tests** across 5 test suites
+- Unit tests for utilities (pattern matching, file processing, concatenation)
+- Service tests for GitHub API integration
+- State management tests for Zustand store
+- Code coverage reporting with v8
+
 ## 📖 Usage Guide
 
 ### Basic File Concatenation
@@ -124,6 +147,7 @@ npm run preview
 - **State Management**: Zustand
 - **Storage**: Dexie.js (IndexedDB wrapper)
 - **APIs**: File System Access API, GitHub REST API
+- **Testing**: Vitest + React Testing Library
 
 ### Project Structure
 
